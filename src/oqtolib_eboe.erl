@@ -61,12 +61,11 @@ get_invoices(SessionID, Sec2) ->
           Items = [begin
                      {ok, Info} = get_customer_info(SessionID, Sec2, B),
                      {ok, Lines_Items} = get_invoice_lines(J),
-                     #{"ex_i_num" => I,
-%%                       "code" => B,
-                       "date" => C,
-                       "total" => H,
-                       "customer_info" => Info,
-                       "lines" => Lines_Items} end ||
+                     #{<<"ex_i_num">> => erlang:list_to_binary(I),
+                       <<"date">> => erlang:list_to_binary(C),
+                       <<"total">> => erlang:list_to_integer(H),
+                       <<"customer_info">> => Info,
+                       <<"lines">> => Lines_Items} end ||
 
             #'eboe:cFactuurList'{
               'Factuurnummer' = I,
@@ -146,26 +145,26 @@ get_customer_info(SessionID, Sec2, Code) ->
           Address = case lists:merge([G, K]) of [] -> "Unknown"; Addr -> Addr end,
 
           Info =
-            #{"name" => #{"prefix" => Prefix,
-              "first_name" => First,
-              "last_name" => Last
+            #{<<"name">> => #{<<"prefix">> =>erlang:list_to_binary(Prefix),
+              <<"first_name">> => erlang:list_to_binary(First),
+              <<"last_name">> => erlang:list_to_binary(Last)
             },
-              "email"=> #{
-                "email_address"=> S
+              <<"email">> => #{
+                <<"email_address">> => erlang:list_to_binary(S)
               },
-              "phone"=> #{
-                "phone_number"=> if PhoneNumber == [] -> "" ;true -> PhoneNumber end,
-                "country_code"=> "NL"
+              <<"phone">>=> #{
+                <<"phone_number">>=> if PhoneNumber == [] -> <<"">>;true -> erlang:list_to_binary(PhoneNumber) end,
+                <<"country_code">>=> <<"NL">>
               },
-              "address" => #{
-                "address1"=>Address,
-                "address2" => "",
-                "locality" => "Unknown",
-                "house_number" => "Unknown",
-                "state" => "Unknown",
-                "zipcode"=> ZCode,
-                "city"=> City,
-                "country_code"=> "NL"
+              <<"address">> => #{
+                <<"address1">> => erlang:list_to_binary(Address),
+                <<"address2">> => <<"">>,
+                <<"locality">> => <<"Unknown">>,
+                <<"house_number">> => <<"Unknown">>,
+                <<"state">> => <<"Unknown">>,
+                <<"zipcode">> => erlang:list_to_binary(ZCode),
+                <<"city">> => erlang:list_to_binary(City),
+                <<"country_code">> => <<"NL">>
               }},
           {ok, Info};
         _ -> error
@@ -175,14 +174,18 @@ get_customer_info(SessionID, Sec2, Code) ->
 
 
 get_invoice_lines(Lines) ->
-  Items = [#{"count" => A1, "desc" => D1, "price" => E1} || #'eboe:cFactuurRegel'{
-    'Aantal' = A1,
+  Items = [
+    #{<<"count">> => erlang:list_to_integer(A1),
+    <<"desc">> => erlang:list_to_binary(D1),
+    <<"price">> => erlang:list_to_integer(E1)} ||
+    #'eboe:cFactuurRegel'{
+      'Aantal' = A1,
 %%    'Eenheid' = B1,
 %%    'Code' = C1,
-    'Omschrijving' = D1,
-    'PrijsPerEenheid' = E1
+      'Omschrijving' = D1,
+      'PrijsPerEenheid' = E1
 %%    'BTWCode' = F1,
 %%    'TegenrekeningCode' = G1,
 %%    'KostenplaatsID' = H1
-  } <- Lines],
+    } <- Lines],
   {ok, Items}.
