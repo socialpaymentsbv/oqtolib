@@ -143,7 +143,7 @@ get_customer_info(SessionID, Sec2, Code) ->
           ZCode = if H == [] -> L;true -> H end,
           City = if I == [] -> M;true -> I end,
 
-          Address = case lists:merge([G, K]) of [] -> "UNKNOWN"; Addr -> Addr end,
+          Address = case lists:merge([G, K]) of [] -> "Unknown"; Addr -> Addr end,
 
           Info =
             #{"name" => #{"prefix" => Prefix,
@@ -159,6 +159,10 @@ get_customer_info(SessionID, Sec2, Code) ->
               },
               "address" => #{
                 "address1"=>Address,
+                "address2" => "",
+                "locality" => "Unknown",
+                "house_number" => "Unknown",
+                "state" => "Unknown",
                 "zipcode"=> ZCode,
                 "city"=> City,
                 "country_code"=> "NL"
