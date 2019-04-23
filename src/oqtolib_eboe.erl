@@ -175,7 +175,7 @@ get_customer_info(SessionID, Sec2, Code) ->
 
 get_invoice_lines(Lines) ->
   Items = [
-    #{<<"count">> => erlang:list_to_integer(A1),
+    #{<<"id">> => erlang:list_to_integer(A1),
     <<"desc">> => erlang:list_to_binary(D1),
     <<"price">> => erlang:list_to_integer(E1)} ||
     #'eboe:cFactuurRegel'{
