@@ -64,6 +64,7 @@ get_invoices(SessionID, Sec2) ->
                      #{<<"ex_i_num">> => erlang:list_to_binary(I),
                        <<"date">> => erlang:list_to_binary(C),
                        <<"total">> => erlang:list_to_integer(H),
+                       <<"totalBTW">> => erlang:list_to_integer(F),
                        <<"customer_info">> => Info,
                        <<"lines">> => Lines_Items} end ||
 
@@ -73,7 +74,7 @@ get_invoices(SessionID, Sec2) ->
               'Datum' = C,
 %%            'Betalingstermijn' = D,
 %%            'TotaalExclBTW' = E,
-%%            'TotaalBTW' = F,
+              'TotaalBTW' = F,
 %%            'TotaalInclBTW' = G,
               'TotaalOpenstaand' = H,
               'Regels' = #'eboe:ArrayOfCFactuurRegel'{cFactuurRegel = J}} <- ListInvoice],
@@ -159,9 +160,9 @@ get_customer_info(SessionID, Sec2, Code) ->
               <<"address">> => #{
                 <<"address1">> => erlang:list_to_binary(Address),
                 <<"address2">> => <<"">>,
-                <<"locality">> => <<"Unknown">>,
-                <<"house_number">> => <<"Unknown">>,
-                <<"state">> => <<"Unknown">>,
+                <<"locality">> => <<"">>,
+                <<"house_number">> => <<"">>,
+                <<"state">> => <<"">>,
                 <<"zipcode">> => erlang:list_to_binary(ZCode),
                 <<"city">> => erlang:list_to_binary(City),
                 <<"country_code">> => <<"NL">>
@@ -176,16 +177,18 @@ get_customer_info(SessionID, Sec2, Code) ->
 get_invoice_lines(Lines) ->
   Items = [
     #{<<"id">> => erlang:list_to_integer(A1),
-    <<"desc">> => erlang:list_to_binary(D1),
-    <<"price">> => erlang:list_to_integer(E1)} ||
+      <<"desc">> => erlang:list_to_binary(D1),
+      <<"price">> => erlang:list_to_integer(E1),
+      <<"BTWCode">> => F1,
+     <<"Ledgernumber">> => H1 } ||
     #'eboe:cFactuurRegel'{
       'Aantal' = A1,
 %%    'Eenheid' = B1,
 %%    'Code' = C1,
       'Omschrijving' = D1,
-      'PrijsPerEenheid' = E1
-%%    'BTWCode' = F1,
+      'PrijsPerEenheid' = E1,
+      'BTWCode' = F1,
 %%    'TegenrekeningCode' = G1,
-%%    'KostenplaatsID' = H1
+    'KostenplaatsID' = H1
     } <- Lines],
   {ok, Items}.
