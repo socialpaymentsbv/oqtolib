@@ -63,7 +63,8 @@ get_invoices(SessionID, Sec2) ->
                      {ok, Lines_Items} = get_invoice_lines(J),
                      #{<<"ex_i_num">> => erlang:list_to_binary(I),
                        <<"date">> => erlang:list_to_binary(C),
-                       <<"total">> => erlang:list_to_integer(H),
+                       <<"unpaid">> => erlang:list_to_integer(H),
+                       <<"total">> => erlang:list_to_integer(G),
                        <<"totalBTW">> => erlang:list_to_integer(F),
                        <<"customer_info">> => Info,
                        <<"lines">> => Lines_Items} end ||
@@ -75,7 +76,7 @@ get_invoices(SessionID, Sec2) ->
 %%            'Betalingstermijn' = D,
 %%            'TotaalExclBTW' = E,
               'TotaalBTW' = F,
-%%            'TotaalInclBTW' = G,
+              'TotaalInclBTW' = G,
               'TotaalOpenstaand' = H,
               'Regels' = #'eboe:ArrayOfCFactuurRegel'{cFactuurRegel = J}} <- ListInvoice],
 
@@ -180,7 +181,7 @@ get_invoice_lines(Lines) ->
       <<"desc">> => erlang:list_to_binary(D1),
       <<"price">> => erlang:list_to_integer(E1),
       <<"BTWCode">> => F1,
-     <<"Ledgernumber">> => H1 } ||
+      <<"Ledgernumber">> => H1} ||
     #'eboe:cFactuurRegel'{
       'Aantal' = A1,
 %%    'Eenheid' = B1,
@@ -189,6 +190,6 @@ get_invoice_lines(Lines) ->
       'PrijsPerEenheid' = E1,
       'BTWCode' = F1,
 %%    'TegenrekeningCode' = G1,
-    'KostenplaatsID' = H1
+      'KostenplaatsID' = H1
     } <- Lines],
   {ok, Items}.
