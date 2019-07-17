@@ -63,7 +63,7 @@ get_invoices(SessionID, Sec2) ->
                      {ok, Lines_Items} = get_invoice_lines(J),
                      #{<<"ex_i_num">> => erlang:list_to_binary(I),
                        <<"date">> => erlang:list_to_binary(C),
-                       <<"payment_term">> => D,
+                       <<"payment_term">> => erlang:list_to_binary(D),
                        <<"unpaid">> => erlang:list_to_integer(H),
                        <<"total">> => erlang:list_to_integer(G),
                        <<"totalBTW">> => erlang:list_to_integer(F),
