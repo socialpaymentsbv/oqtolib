@@ -4,7 +4,7 @@
 -include("oqtolib_eboe.hrl").
 
 %% API
--export([open_session/3, get_invoices/2]).
+-export([open_session/3, get_invoices/2 ,change_list_to_float/1 ]).
 
 
 -spec open_session(string(), string(), string()) -> {ok, string()}| {error, term()}.
@@ -64,9 +64,9 @@ get_invoices(SessionID, Sec2) ->
                      #{<<"ex_i_num">> => erlang:list_to_binary(I),
                        <<"date">> => erlang:list_to_binary(C),
                        <<"payment_term">> => erlang:list_to_binary(D),
-                       <<"unpaid">> => erlang:list_to_integer(H),
-                       <<"total">> => erlang:list_to_integer(G),
-                       <<"totalBTW">> => erlang:list_to_integer(F),
+                       <<"unpaid">> => change_list_to_float(H),
+                       <<"total">> => change_list_to_float(G),
+                       <<"totalBTW">> => change_list_to_float(F),
                        <<"customer_info">> => Info,
                        <<"lines">> => Lines_Items} end ||
 
@@ -180,7 +180,7 @@ get_invoice_lines(Lines) ->
   Items = [
     #{<<"id">> => erlang:list_to_integer(A1),
       <<"desc">> => erlang:list_to_binary(D1),
-      <<"price">> => erlang:list_to_integer(E1),
+      <<"price">> => change_list_to_float(E1),
       <<"BTWCode">> => F1,
       <<"Ledgernumber">> => H1} ||
     #'eboe:cFactuurRegel'{
@@ -194,3 +194,11 @@ get_invoice_lines(Lines) ->
       'KostenplaatsID' = H1
     } <- Lines],
   {ok, Items}.
+
+change_list_to_float(In)->
+  try
+    erlang:list_to_integer(In)
+  catch
+      _e:_t  ->
+        erlang:list_to_float(In)
+  end.
