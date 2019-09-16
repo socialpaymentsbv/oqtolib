@@ -145,7 +145,7 @@ get_customer_info(SessionID, Sec2, Code) ->
           ZCode = if H == [] -> L;true -> H end,
           City = if I == [] -> M;true -> I end,
 
-          Address = case lists:merge([G, K]) of [] -> "Unknown"; Addr -> Addr end,
+          Address = case lists:merge([G, K]) of [] -> ""; Addr -> string:trim(Addr) end,
 
           Info =
             #{<<"name">> => #{<<"prefix">> =>erlang:list_to_binary(Prefix),
