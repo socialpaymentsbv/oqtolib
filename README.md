@@ -1,6 +1,7 @@
 # oqto-soap
 erlang lib  for Oqto.
 
+simple code:
 ```
 open_session(UserName, Sec1, Sec2) ->
     Request = #'eboe:OpenSession'{
